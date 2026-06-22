@@ -7,6 +7,7 @@ namespace StudioMitte\FriendlyCaptcha\FieldValidator;
 use In2code\Powermail\Domain\Validator\AbstractValidator;
 use StudioMitte\FriendlyCaptcha\Service\Api;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
@@ -81,6 +82,6 @@ class PowermailValidator extends AbstractValidator
 
     private function getLanguageService(): LanguageService
     {
-        return $GLOBALS['LANG'];
+        return GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER'] ?? null);
     }
 }
