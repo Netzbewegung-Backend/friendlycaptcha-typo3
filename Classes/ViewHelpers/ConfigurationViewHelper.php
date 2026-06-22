@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace StudioMitte\FriendlyCaptcha\ViewHelpers;
 
 use StudioMitte\FriendlyCaptcha\Configuration;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 class ConfigurationViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
+    protected $escapeOutput = false;
 
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): array
     {
         $configuration = new Configuration();
         return [
-            'languageIsoCode' => self::getLanguageIsoCode(),
+            'languageIsoCode' => $this->getLanguageIsoCode(),
             'siteKey' => $configuration->getSiteKey(),
             'verifyUrl' => $configuration->getVerifyUrl(),
             'puzzleUrl' => $configuration->getPuzzleUrl(),
@@ -27,15 +24,12 @@ class ConfigurationViewHelper extends AbstractViewHelper
         ];
     }
 
-    protected static function getLanguageIsoCode(): string
+    protected function getLanguageIsoCode(): string
     {
         $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
         if (!$language) {
             return '';
         }
-        if ((new Typo3Version())->getMajorVersion() >= 12) {
-            return $language->getLocale()->getLanguageCode();
-        }
-        return $language->getTwoLetterIsoCode();
+        return $language->getLocale()->getLanguageCode();
     }
 }
